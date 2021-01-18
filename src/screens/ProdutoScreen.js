@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
@@ -13,6 +13,7 @@ import {
 
 import { connect, useDispatch } from 'react-redux';
 import { PRODUTO_UPDATE } from '../redux/actions/actionTypes';
+import { CARRINHO_PRODUTO_ADD, CARRINHO_PRODUTO_SUB } from '../redux/actions/actionTypes';
 
 import axios from 'axios';
 
@@ -21,7 +22,7 @@ import Carousel from 'react-native-snap-carousel';
 import { useRoute, useNavigation } from '@react-navigation/native';
 
 const ProdutoScreen = (props) => {
-    const { produto } = props;
+    const { produto, carrinho } = props;
 
     const dispatch = useDispatch();
 
@@ -48,8 +49,9 @@ const ProdutoScreen = (props) => {
                     ]
                 );
             });
-    }, [dispatch, route, navigation, useWindowDimensions]);
-            
+
+    }, [dispatch, route, navigation, useWindowDimensions, useState]);
+
     return (
         <ScrollView style={ styles.container } bounces={ false }>
             <View style={{ alignItems: 'center' }}>
@@ -102,7 +104,7 @@ const ProdutoScreen = (props) => {
             {
                 (produto.price.percentage || produto.price.dealPrice)
                 ? (
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <View style={ styles.textDeal }>
                         <Text style={[ styles.textPrice, { fontSize: fontScale * 16 } ]}>
                             De R${ produto.price.originalPrice }
                         </Text>
@@ -118,6 +120,42 @@ const ProdutoScreen = (props) => {
                     </Text>
                 )
             }
+
+            <Text style={[ styles.textTotal, { fontSize: fontScale * 22 } ]}>
+                Total R${ 
+                    carrinho.some(c => c.produto.id === produto.id)
+                    ? carrinho[carrinho.map((c) => c.produto.id).indexOf(produto.id)].totalProdutos
+                    : 0
+                }
+            </Text>
+
+            <View style={ styles.containerQuantity }>
+                <TouchableOpacity 
+                    style={ styles.containerButton }
+                    onPress={ () => dispatch({ type: CARRINHO_PRODUTO_SUB, produto: produto })}
+                >
+                    <Text style={[ styles.textQuantity, { fontSize: fontScale * 30 } ]}>
+                        -
+                    </Text>
+                </TouchableOpacity>
+
+                <Text style={[ styles.textQuantity, { fontSize: fontScale * 24 } ]}>
+                    {
+                        carrinho.some(c => c.produto.id === produto.id)
+                        ? carrinho[carrinho.map((c) => c.produto.id).indexOf(produto.id)].quantidade
+                        : 0
+                    }
+                </Text>
+
+                <TouchableOpacity 
+                    style={ styles.containerButton }
+                    onPress={ () => dispatch({ type: CARRINHO_PRODUTO_ADD, produto: produto })}
+                >
+                    <Text style={[ styles.textQuantity, { fontSize: fontScale * 30 } ]}>
+                        +
+                    </Text>
+                </TouchableOpacity>
+            </View>
         </ScrollView>
     )
 }
@@ -153,11 +191,35 @@ const styles = StyleSheet.create({
     textPrice: {
         alignSelf: 'flex-start',
         marginHorizontal: 30
+    },
+    textDeal: { 
+        flexDirection: 'row', 
+        justifyContent: 'space-between' 
+    },
+    textTotal: {
+        alignSelf: 'center',
+        marginTop: 30,
+        marginBottom: 20
+    },
+    containerQuantity: {
+        flexDirection: 'row', 
+        justifyContent: 'space-between',
+        marginHorizontal: 30,
+        alignItems: 'center'
+    },
+    textQuantity: {
+        fontFamily: 'bold'
+    },
+    containerButton: { 
+        width: 50, 
+        height: 50, 
+        alignItems: 'center' 
     }
 });
 
 const mapStateToProps = store => ({
-    produto: store.produtoReducer.produto
+    produto: store.produtoReducer.produto,
+    carrinho: store.carrinhoReducer.carrinho
 });
 
 export default connect(mapStateToProps)(ProdutoScreen);
