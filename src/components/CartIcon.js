@@ -8,10 +8,10 @@ import {
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-const CartIcon = (props) => {
-    const { carrinho } = props;
+const CartIcon = () => {
+    const carrinho = useSelector(state => state.carrinhoReducer.carrinho);
 
     const fontScale = useWindowDimensions().fontScale;
 
@@ -44,8 +44,4 @@ const styles = StyleSheet.create({
     }
 });
 
-const mapStateToProps = store => ({
-    carrinho: store.carrinhoReducer.carrinho
-});
-
-export default connect(mapStateToProps)(CartIcon);
+export default CartIcon;

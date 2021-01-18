@@ -3,7 +3,6 @@ import React from 'react';
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { useNavigation } from '@react-navigation/native';
 
 import { Provider } from 'react-redux';
 import { Store } from './src/redux/store/index';

@@ -7,7 +7,7 @@ import {
     StatusBar
 } from 'react-native';
 
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { LISTA_UPDATE } from '../redux/actions/actionTypes';
 
@@ -15,8 +15,9 @@ import axios from 'axios';
 
 import ItemListaProdutos from '../components/ItemListaProdutos';
 
-const ListagemProdutosScreen = (props) => {
+const ListagemProdutosScreen = () => {
     const dispatch = useDispatch();
+    const produtos = useSelector(state => state.listaReducer.listaProdutos);
 
     useEffect(() => {
         axios.get('http://107.170.96.111:9000/api/items')
@@ -34,9 +35,7 @@ const ListagemProdutosScreen = (props) => {
                     ]
                 );
             })
-    }, [dispatch]);
-
-    const { produtos } = props;
+    }, [dispatch, produtos]);
 
     return (
         <View style={ styles.container }>
@@ -66,8 +65,4 @@ const styles = StyleSheet.create({
     }
 });
 
-const mapStateToProps = store => ({
-    produtos: store.listaReducer.listaProdutos
-});
-
-export default connect(mapStateToProps)(ListagemProdutosScreen);
+export default ListagemProdutosScreen;
