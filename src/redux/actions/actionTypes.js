@@ -1,1 +1,2 @@
 export const LISTA_UPDATE = 'LISTA_UPDATE';
+export const PRODUTO_UPDATE = 'PRODUTO_UPDATE';

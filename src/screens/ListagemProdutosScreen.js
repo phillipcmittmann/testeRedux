@@ -3,7 +3,8 @@ import {
     View,
     StyleSheet,
     Alert,
-    FlatList
+    FlatList,
+    StatusBar
 } from 'react-native';
 
 import { connect, useDispatch } from 'react-redux';
@@ -39,6 +40,8 @@ const ListagemProdutosScreen = (props) => {
 
     return (
         <View style={ styles.container }>
+            <StatusBar backgroundColor='white' barStyle='dark-content' />
+
             <FlatList
                 data={ produtos }
                 keyExtractor={ (item, index ) => index.toString() }

@@ -6,14 +6,19 @@ import {
     useWindowDimensions,
     Image,
     View
-} from 'react-native'
+} from 'react-native';
+
+import { useNavigation } from '@react-navigation/native';
 
 const ItemListaProdutos = (props) => {
     const { item } = props;
 
+    const navigation = useNavigation();
+
     return (
         <TouchableOpacity
             style={[ styles.container, { width: useWindowDimensions().width * 0.9 } ]}
+            onPress={ () => navigation.navigate('Produto', { id: item.id }) }
         >
             <Image
                 source={{ uri: item.images[0] }}
