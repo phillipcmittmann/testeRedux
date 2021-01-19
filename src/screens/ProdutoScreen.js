@@ -183,8 +183,8 @@ const styles = StyleSheet.create({
         height: 200,
     },
     textDescription: {
-        borderWidth: 1,
-        borderColor: 'black',
+        borderWidth: 3,
+        borderColor: '#C0C0C0',
         color: 'black',
         marginHorizontal: 15
     },

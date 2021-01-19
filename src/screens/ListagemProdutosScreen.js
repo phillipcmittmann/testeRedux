@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
     View,
     StyleSheet,
     Alert,
     FlatList,
-    StatusBar
+    StatusBar,
+    TextInput,
+    useWindowDimensions
 } from 'react-native';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -18,6 +20,11 @@ import ItemListaProdutos from '../components/ItemListaProdutos';
 const ListagemProdutosScreen = () => {
     const dispatch = useDispatch();
     const produtos = useSelector(state => state.listaReducer.listaProdutos);
+    const [input, setInput] = useState('');
+
+    const produtosFiltrados = useMemo(() => {
+        return produtos.filter(p => (String(p.ean).toLowerCase().includes(input) || String(p.name).includes(input) || String(p.id).includes(input)))
+    }, [produtos, input]);
 
     useEffect(() => {
         axios.get('http://107.170.96.111:9000/api/items')
@@ -41,8 +48,20 @@ const ListagemProdutosScreen = () => {
         <View style={ styles.container }>
             <StatusBar backgroundColor='white' barStyle='dark-content' />
 
+            <TextInput
+                value={ input }
+                onChangeText={ (text) => setInput(text) }
+                style={[ 
+                    styles.textInput, 
+                    { 
+                        width: useWindowDimensions().width * 0.7, 
+                        fontSize: useWindowDimensions().fontScale * 14 
+                    } 
+                ]}
+            />
+
             <FlatList
-                data={ produtos }
+                data={ produtosFiltrados }
                 keyExtractor={ (item, index ) => index.toString() }
                 renderItem={ ({ item, index }) => {
                     return (
@@ -62,6 +81,12 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         backgroundColor: 'white'
+    },
+    textInput: {
+        borderColor: 'black',
+        borderRadius: 3,
+        borderWidth: 1,
+        marginVertical: 20
     }
 });
 
