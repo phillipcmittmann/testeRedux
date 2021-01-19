@@ -21,6 +21,8 @@ import Carousel from 'react-native-snap-carousel';
 
 import { useRoute, useNavigation } from '@react-navigation/native';
 
+import NumberFormat from 'react-number-format';
+
 const ProdutoScreen = (props) => {
     const { produto, carrinho } = props;
 
@@ -105,29 +107,69 @@ const ProdutoScreen = (props) => {
                 (produto.price.percentage || produto.price.dealPrice)
                 ? (
                     <View style={ styles.textDeal }>
-                        <Text style={[ styles.textPrice, { fontSize: fontScale * 16 } ]}>
-                            De R${ produto.price.originalPrice }
-                        </Text>
+                        <NumberFormat
+                            value={ produto.price.originalPrice }
+                            displayType={ 'text' }
+                            prefix={ 'R$ ' }
+                            decimalSeparator={ ',' }
+                            decimalScale={ 2 }
+                            fixedDecimalScale={ true }
+                            renderText={ value => (
+                                <Text style={[ styles.textPrice, { fontSize: fontScale * 16 } ]}>
+                                    De { value }
+                                </Text>
+                            ) }
+                        />
 
-                        <Text style={[ styles.textPrice, { fontSize: fontScale * 16 } ]}>
-                            Por R${ produto.price.dealPrice }
-                        </Text>
+                        <NumberFormat
+                            value={ produto.price.dealPrice }
+                            displayType={ 'text' }
+                            prefix={ 'R$ ' }
+                            decimalSeparator={ ',' }
+                            decimalScale={ 2 }
+                            fixedDecimalScale={ true }
+                            renderText={ value => (
+                                <Text style={[ styles.textPrice, { fontSize: fontScale * 16 } ]}>
+                                    Por { value }
+                                </Text>
+                            ) }
+                        />
                     </View>
                 )
                 : (
-                    <Text style={[ styles.textPrice, { fontSize: fontScale * 16 } ]}>
-                        Por R${ produto.price.originalPrice }
-                    </Text>
+                    <NumberFormat
+                        value={ produto.price.originalPrice }
+                        displayType={ 'text' }
+                        prefix={ 'R$ ' }
+                        decimalSeparator={ ',' }
+                        decimalScale={ 2 }
+                        fixedDecimalScale={ true }
+                        renderText={ value => (
+                            <Text style={[ styles.textPrice, { fontSize: fontScale * 16 } ]}>
+                                Por { value }
+                            </Text>
+                        ) }
+                    />
                 )
             }
 
-            <Text style={[ styles.textTotal, { fontSize: fontScale * 22 } ]}>
-                Total R${ 
+            <NumberFormat
+                value={ 
                     carrinho.some(c => c.produto.id === produto.id)
                     ? carrinho[carrinho.map((c) => c.produto.id).indexOf(produto.id)].totalProdutos
                     : 0
                 }
-            </Text>
+                displayType={ 'text' }
+                prefix={ 'R$ ' }
+                decimalSeparator={ ',' }
+                decimalScale={ 2 }
+                fixedDecimalScale={ true }
+                renderText={ value => (
+                    <Text style={[ styles.textTotal, { fontSize: fontScale * 22 } ]}>
+                        Total { value }
+                    </Text>
+                ) }
+            />
 
             <View style={ styles.containerQuantity }>
                 <TouchableOpacity 
@@ -205,7 +247,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row', 
         justifyContent: 'space-between',
         marginHorizontal: 30,
-        alignItems: 'center'
+        alignItems: 'center',
+        marginBottom: 50
     },
     textQuantity: {
         fontFamily: 'bold'

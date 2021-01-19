@@ -10,6 +10,8 @@ import {
 
 import { useNavigation } from '@react-navigation/native';
 
+import NumberFormat from 'react-number-format';
+
 const ItemListaProdutos = (props) => {
     const { item } = props;
 
@@ -25,7 +27,14 @@ const ItemListaProdutos = (props) => {
         >
             <Image
                 source={{ uri: item.images[0] }}
-                style={ styles.image }
+                style={[ 
+                    styles.image, 
+                    { 
+                        marginLeft: (item.price.percentage || item.price.dealPrice)
+                        ? 60
+                        : 40
+                    } 
+                ]}
                 resizeMode='contain'
             />
 
@@ -44,16 +53,59 @@ const ItemListaProdutos = (props) => {
             }
 
             <View style={ styles.textContainer }>
-                <Text style={[ styles.text, { fontSize: useWindowDimensions().fontScale * 18 } ]}>
+                <Text style={{ fontSize: useWindowDimensions().fontScale * 18, marginVertical: 10 }}>
                     { item.name }
                 </Text>
 
-                <Text style={[ styles.text, { fontSize: useWindowDimensions().fontScale * 16 } ]}>
-                    { item.price.dealPrice !== undefined 
-                        ? `De R$${ item.price.originalPrice }  Por R$${ item.price.dealPrice }`
-                        : `Por R$${ item.price.originalPrice }`
-                    }
-                </Text>
+                {
+                    (item.price.percentage || item.price.dealPrice)
+                    ? (
+                        <View style={ styles.textDeal }>
+                            <NumberFormat
+                                value={ item.price.originalPrice }
+                                displayType={ 'text' }
+                                prefix={ 'R$ ' }
+                                decimalSeparator={ ',' }
+                                decimalScale={ 2 }
+                                fixedDecimalScale={ true }
+                                renderText={ value => (
+                                    <Text style={[ styles.text, { fontSize: fontScale * 14 } ]}>
+                                        De { value }
+                                    </Text>
+                                ) }
+                            />
+    
+                            <NumberFormat
+                                value={ item.price.dealPrice }
+                                displayType={ 'text' }
+                                prefix={ 'R$ ' }
+                                decimalSeparator={ ',' }
+                                decimalScale={ 2 }
+                                fixedDecimalScale={ true }
+                                renderText={ value => (
+                                    <Text style={[ styles.text, { fontSize: fontScale * 14 } ]}>
+                                        Por { value }
+                                    </Text>
+                                ) }
+                            />
+                        </View>
+                    )
+                    : (
+                        <NumberFormat
+                            value={ item.price.originalPrice }
+                            displayType={ 'text' }
+                            prefix={ 'R$ ' }
+                            decimalSeparator={ ',' }
+                            decimalScale={ 2 }
+                            fixedDecimalScale={ true }
+                            renderText={ value => (
+                                <Text style={[ styles.text, { fontSize: fontScale * 14 } ]}>
+                                    Por { value }
+                                </Text>
+                            ) }
+                        />
+                    )
+                }
             </View>
         </TouchableOpacity>
     )
@@ -69,17 +121,13 @@ const styles = StyleSheet.create({
         borderRadius: 5
     },
     image: {
-        width: 100,
-        height: 100,
-        margin: 15,
-        marginLeft: 40
+        width: 80,
+        height: 80,
+        margin: 15
     },
     textContainer: { 
         justifyContent: 'center', 
         marginLeft: 20
-    },
-    text: {
-        marginVertical: 10
     },
     containerPercentage: { 
         position: 'absolute', 
