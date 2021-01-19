@@ -23,7 +23,7 @@ const ListagemProdutosScreen = () => {
     const [input, setInput] = useState('');
 
     const produtosFiltrados = useMemo(() => {
-        return produtos.filter(p => (String(p.ean).toLowerCase().includes(input) || String(p.name).includes(input) || String(p.id).includes(input)))
+        return produtos.filter(p => (String(p.ean).toLowerCase().includes(String(input).toLowerCase()) || String(p.name).toLowerCase().includes(String(input).toLowerCase()) || String(p.id).toLowerCase().includes(String(input).toLowerCase())))
     }, [produtos, input]);
 
     useEffect(() => {
